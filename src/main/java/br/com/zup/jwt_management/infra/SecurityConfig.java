@@ -42,6 +42,8 @@ public class SecurityConfig {
                     authorize.requestMatchers("/api/auth/login").permitAll();
                     authorize.requestMatchers(HttpMethod.POST, "/user").permitAll();
                     authorize.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
+                    authorize.requestMatchers("api/admin").hasRole("ADMIN");
+                    authorize.requestMatchers(("api/user")).hasRole("USER");
                     authorize.anyRequest().authenticated();
                 }).httpBasic(Customizer.withDefaults());
 
