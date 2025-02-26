@@ -1,5 +1,6 @@
 package br.com.zup.jwt_management.infra.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -36,6 +37,11 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
+    public <T> T getClaim(String token, String claimName, Class<T> requiredType) {
+        Claims claims = getClaims(token);
+        return claims.get(claimName, requiredType);
+    }
+
     // extract username from JWT token
     public String getUsername(String token){
 
@@ -55,5 +61,13 @@ public class JwtTokenProvider {
                 .parse(token);
         return true;
 
+    }
+
+    private Claims getClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key())
+                .build()
+                .parseClaimsJws(token) // Use parseClaimsJws for signed tokens
+                .getBody();
     }
 }
